@@ -1,48 +1,50 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { createRef, useCallback, useEffect, useState } from 'react';
+import {useDispatch} from "react-redux";
+import {addNewTodo} from "../../Redux/actions";
+import { v4 as uuidv4 } from 'uuid';
+import {FormInput, FormStyle} from "./Form.styles";
 
-class Form extends React.Component {
-  state = {
-    title: '',
-  };
 
-  handleChange = (event) => {
+export const Form = () => {
+  const dispatch = useDispatch();
+  const [title, setTitle] = useState('');
+  const inputRef = createRef();
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+  const handleChange = useCallback((event) => {
     const { value } = event.target;
 
-    this.setState({
-      title: value,
-    });
-  };
+    setTitle(value);
+  });
 
-  handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    const { title } = this.state;
 
-    this.props.addTodo(title);
+    if (!title.trim()) {
+      return;
+    }
 
-    this.setState({
-      title: '',
-    });
+    const todo = {
+      id: uuidv4(),
+      title,
+      completed: false,
+    };
+    dispatch(addNewTodo(todo));
+
+    setTitle('');
   };
 
-  render() {
-    const { title } = this.state;
-
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input
-          className="new-todo"
-          placeholder="What needs to be done?"
-          value={title}
-          onChange={this.handleChange}
-        />
-      </form>
-    );
-  }
-}
-
-Form.propTypes = {
-  addTodo: PropTypes.func.isRequired,
+  return (
+    <FormStyle onSubmit={handleSubmit}>
+      <FormInput
+        placeholder="What needs to be done?"
+        value={title}
+        onChange={handleChange}
+        ref={inputRef}
+      />
+    </FormStyle>
+  );
 };
-
-export default Form;

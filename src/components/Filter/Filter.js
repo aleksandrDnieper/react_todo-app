@@ -1,45 +1,35 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import cx from 'classnames';
+import React from "react";
+import cx from "classnames";
+import { useDispatch, useSelector} from "react-redux";
+import { setFilter } from "../../Redux/actions";
+import { v4 as uuidv4 } from "uuid";
+import { FiltersList, FilterItem, FilterButton } from "./Filter.styles";
+import {Data} from "../../constants/data";
 
-const Filter = ({ handleFilterClick, filter }) => (
-  <ul className="filters">
-    <li>
-      <button
-        type="button"
-        className={cx({ selected: filter === 'all' })}
-        name="all"
-        onClick={handleFilterClick}
-      >
-        All
-      </button>
-    </li>
-    <li>
-      <button
-        type="button"
-        className={cx({ selected: filter === 'active' })}
-        name="active"
-        onClick={handleFilterClick}
-      >
-        Active
-      </button>
-    </li>
-    <li>
-      <button
-        type="button"
-        className={cx({ selected: filter === 'completed' })}
-        name="completed"
-        onClick={handleFilterClick}
-      >
-        Completed
-      </button>
-    </li>
-  </ul>
-);
+export const Filter = () => {
+  const filter_type = useSelector(state => state.filterState.filter_type);
+  const dispatch = useDispatch();
 
-Filter.propTypes = {
-  handleFilterClick: PropTypes.func.isRequired,
-  filter: PropTypes.string.isRequired,
+  const handleClick = (e) => {
+    const { name } = e.target;
+
+    dispatch(setFilter(name));
+  }
+
+  return (
+    <FiltersList className="filters">
+      {Object.keys(Data).map((filterType) => (
+        <FilterItem key={uuidv4()}>
+          <FilterButton
+            type="button"
+            className={cx({ selected: filterType === filter_type })}
+            name={filterType}
+            onClick={(e) => handleClick(e)}
+          >
+            {filterType}
+          </FilterButton>
+        </FilterItem>
+      ))}
+    </FiltersList>
+  );
 };
-
-export default Filter;
