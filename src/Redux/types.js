@@ -1,5 +1,5 @@
 export const SET_TODOS = 'SET_TODOS';
-export const ADD_TODO = 'CREATE_TODO';
+export const ADD_TODO = 'ADD_TODO';
 export const UPDATE_TITLE_TODO = 'UPDATE_TITLE_TODO';
 export const DELETE_TODO = 'DELETE_TODO';
 export const CHANGE_STATUS_TODO = 'CHANGE_STATUS_TODO';

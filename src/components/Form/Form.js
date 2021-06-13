@@ -18,7 +18,7 @@ export const Form = () => {
     const { value } = event.target;
 
     setTitle(value);
-  });
+  }, [title]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
