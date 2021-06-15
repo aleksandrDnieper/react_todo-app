@@ -6,6 +6,8 @@ import {
   SET_TODOS,
   CLEAR_ALL_COMPLETED_TODOS, UPDATE_TITLE_TODO
 } from './types';
+import produce from 'immer';
+
 
 const initState = {
   todos: [],
@@ -21,10 +23,7 @@ export const todosReducer = (state = initState, action) => {
     }
 
     case ADD_TODO: {
-      return {
-        ...state,
-        todos: state.todos.concat([action.payload]),
-      };
+      return produce(state, draft => { draft.todos.push(action.payload)});
     }
 
     case DELETE_TODO: {

@@ -1,45 +1,26 @@
 import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import PublicRoute from "./components/PublicRoute/PublicRoute";
+import Dashboard from "./views/Dashboard/Dashboard";
+import SignIn from "./views/SignIn/SignIn";
+import Home from "./views/Home/Home";
+import {TodoApp} from "./views/TodoApp/TodoApp";
 import GlobalStyle from "./GlobalStyles";
-import {Header} from "./containers/Header/Header";
-import {TodoAppSection} from "./App.styles";
-import {Footer} from "./containers/Footer/Footer";
-import {useDispatch, useSelector} from "react-redux";
-import {MainSection} from "./containers/MainSection/MainSection";
-import {setTodos} from "./Redux/actions";
 
 
 export const App = () => {
-  const todos = useSelector(state => state.todosState.todos)
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const LocallySavedTodos = localStorage.getItem('todos');
-
-    if (LocallySavedTodos) {
-      const localTodos = JSON.parse(LocallySavedTodos);
-
-      dispatch(setTodos(localTodos));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
-
   return (
     <>
       <GlobalStyle />
-      <TodoAppSection>
-        <Header />
-        {
-          todos.length > 0
-            ? <>
-                <MainSection />
-                <Footer />
-              </>
-            : null
-        }
-    </TodoAppSection>
+      <Router>
+        <Switch>
+          <PublicRoute restricted={false} component={Home} path="/" exact />
+          <PublicRoute restricted={true} component={SignIn} path="/signin" exact />
+          <PrivateRoute component={Dashboard} path="/dashboard" exact />
+          <PrivateRoute component={TodoApp} path="/todoapp" exact />
+        </Switch>
+    </Router>
     </>
-  );
+    )
 };
